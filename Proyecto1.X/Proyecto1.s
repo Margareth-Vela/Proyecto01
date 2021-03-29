@@ -3,10 +3,10 @@
     ;Autor:	    Margareth Vela
     ;Compilador:    pic-as(v2.31), MPLABX V5.45
     ;
-    ;Programa:	    Proyecto-Semáforo de 3 vías
+    ;Programa:	    Proyecto Semáforo de 3 vías
     ;Hardware:	    Displays 7 seg en PORTC, transistores en PORTD,
-    ;		    leds en PORTA y PORTE & push buttons en PORTB
-    ;Creado:  22 mar 2021
+    ;		    leds en PORTA, PORTE y PORTB & push buttons en PORTB
+    ;Creado:  21 mar 2021
     ;Última modificación: abr, 2021
     
 PROCESSOR 16F887
