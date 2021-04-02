@@ -2497,17 +2497,10 @@ reiniciar_tmr1 macro ; Reinicio de Timer1
     bcf ((PIR1) and 07Fh), 0 ; Limpiar bandera de interrupción por overflow
     endm
 
-reiniciar_tmr2 macro ; Reinicio de Timer2
-    Banksel PORTA ; Acceder al Bank 0
-    movlw 0xFF ; Cargar valor de registro W, valor inicial del tmr2
-    movwf PR2 ; Mover el valor de W a PR2
-    bcf ((PIR1) and 07Fh), 1 ; Limpiar bandera de interrupción por overflow
-    endm
-
 ;-------------------------------------------------------------------------------
 ; Variables
 ;-------------------------------------------------------------------------------
-GLOBAL vias, via_sem, bandera_via_1, sem1_time_temp, sem1_time
+GLOBAL vias, via_sem, bandera_via_1, sem1_time_temp, sem1_time, modo, var, unidades, decenas, modo_d, modo_u
 PSECT udata_bank0 ; Variables en banco 0
     vias: DS 1 ;indicar de la via 1, 2 o 3
 
@@ -2517,7 +2510,7 @@ PSECT udata_bank0 ; Variables en banco 0
     sem2_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
     sem3_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
 
-    tiempo_inicial_sem1: DS 1
+    tiempo_inicial_sem1: DS 1 ;Para guardar los valores iniciales de los semaforos
     tiempo_inicial_sem2: DS 1
     tiempo_inicial_sem3: DS 1
 
@@ -2526,7 +2519,9 @@ PSECT udata_bank0 ; Variables en banco 0
     sem3_time_rojo: DS 1
 
     modo: DS 1 ;bandera de modo
-    var_modo: DS 1 ;Para configurar el display de modo
+    var: DS 1 ;Para configurar el display de modo
+    unidades: DS 1 ;Para sacar el valor en decimal
+    decenas: DS 1
     modo_d: DS 1 ;Para display de decenas de modo
     modo_u: DS 1 ;Para display de unidades de modo
 
@@ -2548,17 +2543,18 @@ PSECT udata_bank0 ; Variables en banco 0
     sem3_d: DS 1
     sem3_u: DS 1
 
-    sem1_time: DS 1 ;tiempos de configuración
+    sem1_time: DS 1 ;tiempos de semáforos
     sem2_time: DS 1
     sem3_time: DS 1
 
-    flags: DS 1 ;Para determinar que display ses enciende
+    flags: DS 1 ;Para determinar que display se enciende
     contador: DS 1
     contador_temp: DS 1
     cont_small: DS 2
-    unidades: DS 1 ;Para sacar el valor en decimal
-    decenas: DS 1
 
+    tiempo_sem_1: DS 1 ;para configurar tiempos
+    tiempo_sem_2: DS 1
+    tiempo_sem_3: DS 1
 
 PSECT udata_shr ; Variables en Share memory
     W_TEMP: DS 1
@@ -2589,8 +2585,19 @@ isr:
     call int_tmr0 ; Ir a la subrutina del TMR0
     btfsc ((PIR1) and 07Fh), 0 ; Testear la bandera de interrupción del TMR1
     call int_tmr1 ; Ir a la subrutina del TMR1
-    btfsc ((PIR1) and 07Fh), 1 ; Testear la bandera de interrupción del TMR2
-    call int_tmr2 ; Ir a la subrutina del TMR2
+    btfss ((INTCON) and 07Fh), 0 ; Si está encendida la bandera, entonces
+    goto pop ; incrementa o decrementa el puerto A y el display
+
+    btfsc modo, 0 ;tenemos la bandera de modo 0, 1, 2, 3, 4
+    goto modo_0_int
+    btfsc modo, 1
+    call modo_1_int
+    btfsc modo, 2
+    call modo_2_int
+    btfsc modo, 3
+    call modo_3_int
+
+
 
 pop:
     swapf STATUS_TEMP, W
@@ -2599,15 +2606,72 @@ pop:
     swapf W_TEMP, W
     RETFIE
 
-;--------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------
 ; Sub rutinas para interrupciones
 ;-------------------------------------------------------------------------------
-int_tmr2:
+modo_0_int:
+    btfss PORTB, 2 ; Si está presionado el push del bit 1,
+    call cambiar_modo_a_1 ; decrementa el PORTA
+    bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera de IOC
+    goto pop
 
-    reiniciar_tmr2
-
+cambiar_modo_a_1:
+    clrf modo
+    bsf modo, 5
+    bsf modo, 1
     return
 
+modo_1_int:
+    btfss PORTB, 0 ; Si está presiona el push del bit 0,
+    incf tiempo_sem_1 ; incrementa la variable de tiempo
+    btfss PORTB, 1 ; Si está presiona el push del bit 1,
+    decf tiempo_sem_1 ; decrementa la variable de tiempo
+    btfss PORTB, 2 ; Si está presionado el push del bit 2,
+    call cambiar_modo_a_2
+    bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera de IOC
+    goto pop
+
+cambiar_modo_a_2:
+    clrf modo
+    bsf modo, 2 ; cambia de modo
+    bsf modo, 5
+    return
+
+modo_2_int:
+    btfss PORTB, 0 ; Si está presiona el push del bit 0,
+    incf tiempo_sem_2 ; incrementa la variable de tiempo
+    btfss PORTB, 1 ; Si está presiona el push del bit 1,
+    decf tiempo_sem_2 ; decrementa la variable de tiempo
+    btfss PORTB, 2 ; Si está presionado el push del bit 2,
+    call cambiar_modo_a_3
+    bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera de IOC
+    goto pop
+
+cambiar_modo_a_3:
+    clrf modo
+    bsf modo, 3 ; cambia de modo
+    bsf modo, 5
+    return
+
+modo_3_int:
+    btfss PORTB, 0 ; Si está presiona el push del bit 0,
+    incf tiempo_sem_3 ; incrementa la variable de tiempo
+    btfss PORTB, 1 ; Si está presiona el push del bit 1,
+    decf tiempo_sem_3 ; decrementa la variable de tiempo
+    btfss PORTB, 2 ; Si está presionado el push del bit 2,
+    call cambiar_modo_a_4
+    bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera de IOC
+    goto pop
+
+cambiar_modo_a_4:
+    clrf modo
+    bsf modo, 4 ; cambia de modo
+    bsf modo, 5
+    return
+
+;-------------------------------------------------------------------------------
+; Comienza funcionamiento de TMR1
+;-------------------------------------------------------------------------------
 int_tmr1:
     reiniciar_tmr1
     btfsc vias, 0
@@ -2618,6 +2682,9 @@ int_tmr1:
     call restar_via_3
     return
 
+;-------------------------------------------------------------------------------
+; Sub rutinas para TMR1
+;-------------------------------------------------------------------------------
  restar_via_1:
     decf sem1_time
     decf sem1_time_temp
@@ -2773,6 +2840,9 @@ restar_via_2:
     bsf bandera_via_1, 2
     return
 
+;-------------------------------------------------------------------------------
+; Comienza funcionamiento de TMR0
+;-------------------------------------------------------------------------------
 int_tmr0:
     reiniciar_tmr0 ; Reiniciar el TMR0
     clrf PORTD ; Limpiar los displays
@@ -2842,6 +2912,8 @@ display_decenas_s3:
     return
 
 display_unidades_modo:
+    btfss modo, 5 ;Indica si es necesario el display de modo
+    goto $+4
     movf modo_u, W ; El primer byte de display va al registro W
     movwf PORTC ; Colocar el valor en el PORTC
     bsf PORTD, 1 ; Seleccionar unidades
@@ -2850,6 +2922,8 @@ display_unidades_modo:
     return
 
 display_decenas_modo:
+    btfss modo, 5 ;Indica si es necesario el display de modo
+    goto $+4
     movf modo_d, W ; El segundo byte de display va al registro W
     movwf PORTC ; Colocar el valor en el PORTC
     bsf PORTD, 0 ; Seleccionar decenas
@@ -2893,12 +2967,23 @@ main:
     call config_reloj ; Configurar el reloj (oscilador)
     call config_tmr0 ; Configurar el registro de TMR0
     call config_tmr1 ; Configurar el registro de TMR1
-    call config_tmr2 ; Configurar el registro de TMR2
     call config_int ; Configuración de las interrupciones
+    call config_IOC
     call tiempos ; Cargan los valores iniciales
+    call default_tiempos_config
     call default_semaforos
 
+;-------------------------------------------------------------------------------
+; Loop principal
+;-------------------------------------------------------------------------------
 loop:
+    btfsc modo, 1
+    call modo_1
+    btfsc modo, 2
+    call modo_2
+    btfsc modo, 3
+    call modo_3
+
 
     btfsc vias, 0; en tu loop vas a verificar que via tiene la bandera
     call via_1 ; y vas a asignar el valor de cont_viax = vartemp del display
@@ -2906,7 +2991,66 @@ loop:
     call via_2
     btfsc vias, 2
     call via_3
+
     goto loop
+;-------------------------------------------------------------------------------
+; Subrutinas para modos de configuración
+;-------------------------------------------------------------------------------
+modo_1:
+    bsf PORTB, 5
+    bcf PORTB, 6
+    bcf PORTB, 7
+    movf tiempo_sem_1, w
+    movwf var
+    call modo_config
+    return
+
+modo_2:
+    bcf PORTB, 5
+    bsf PORTB, 6
+    bcf PORTB, 7
+    movf tiempo_sem_2, w
+    movwf var
+    call modo_config
+    return
+
+modo_3:
+    bcf PORTB, 5
+    bcf PORTB, 6
+    bsf PORTB, 7
+    movf tiempo_sem_3, w
+    movwf var
+    call modo_config
+    return
+
+modo_config:
+    clrf unidades ; Se limpian las variables a utilizar
+    clrf decenas
+
+    movlw 10 ; Revisión decenas
+    subwf var,1 ; Se restan 10 a la variable temporal
+    btfsc STATUS, 0 ;Revisión de la bandera de Carry
+    incf decenas, 1 ;Si C=1 entonces es menor a 10 y no incrementa la variable
+    btfsc STATUS, 0 ;Revisión de la bandera de Carry
+    goto $-4
+    addwf var,1 ; Se regresa la variable temporal a su valor original
+
+    ;Resultado unidades
+    movf var, 0 ; Se mueve lo restante en la variable temporal a la
+    movwf unidades ; variable de unidades
+
+    clrf modo_d
+    clrf modo_u
+
+    movf decenas, 0
+    call tabla ; Se obtiene el valor correspondiente para el display
+    movwf modo_d ; y se coloca en la variable que se utiliza en el cambio
+   ; de displays (Interrupción TMR0)
+
+    movf unidades, 0
+    call tabla
+    movwf modo_u
+    return
 
 ;-------------------------------------------------------------------------------
 ; Subrutinas para Semáforos
@@ -3214,6 +3358,7 @@ tiempo_verde_via_3:
     movf sem3_time, 0 ; Mueve el valor del contador al registro W
     movwf sem_t3 ; Mueve el valor a una variable temporal
     return
+
 ;-------------------------------------------------------------------------------
 ; Subrutinas de configuración
 ;-------------------------------------------------------------------------------
@@ -3228,13 +3373,35 @@ config_io:
     clrf TRISD ; Multiplexado de displays
     clrf TRISE ; Luces indicadoras
 
+    ;Para modos de configuración
+    bsf TRISB, 0 ;Push button de incremento
+    bsf TRISB, 1 ;Push button de decremento
+    bsf TRISB, 2 ;Push button de modo de configuración
+    bcf TRISB, 5 ;Salida de modo 1
+    bcf TRISB, 6 ;Salida de modo 2
+    bcf TRISB, 7 ;Salida de modo 3
+
+    bcf OPTION_REG, 7 ;Habilitar pull-ups
+    bsf WPUB, 0 ;Push button de incremento
+    bsf WPUB, 1
+    bsf WPUB, 2
+
     banksel PORTA ; Acceder al Bank 3
     clrf PORTA ; Comenzar luces del semaforo apagado
+    clrf PORTB
     clrf PORTC ; Comenzar displays apagados
     clrf PORTD ; Comenzar el multiplexado apagado
     clrf PORTE ; Comenzar luces de indicadores apagados
 
     bsf vias, 0
+    bsf modo, 0
+    return
+
+default_tiempos_config:
+    movlw 10
+    movwf tiempo_sem_1
+    movwf tiempo_sem_2
+    movwf tiempo_sem_3
     return
 
 default_semaforos:
@@ -3256,16 +3423,26 @@ config_int:
     Banksel PORTA ; Acceder al Bank 0
     bsf ((INTCON) and 07Fh), 7 ; Se habilitan las interrupciones globales
     bsf ((INTCON) and 07Fh), 6 ; Se habilitan las interrupciones perifericas
+    bsf ((INTCON) and 07Fh), 3 ; Se habilita la interrupción de las resistencias pull-ups
+    bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera
     bsf ((INTCON) and 07Fh), 5 ; Se habilitan la interrupción del TMR0
     bcf ((INTCON) and 07Fh), 2 ; Se limpia la bandera
 
     Banksel TRISA ; Acceder al Bank 1
     bsf ((PIE1) and 07Fh), 0 ; Se habilitan la interrupción del TMR1 Registro PIE1
-    bsf ((PIE1) and 07Fh), 1 ; Se habilitan la interrupción del TMR2 Registro PIE1
     Banksel PORTA ; Acceder al Bank 0
-
     bcf ((PIR1) and 07Fh), 0 ; Se limpia la bandera Registro PIR1
-    bcf ((PIR1) and 07Fh), 1 ; Se limpia la bandera Registro PIR1
+    return
+
+config_IOC:
+    banksel TRISA
+    bsf IOCB, 0 ;Se habilita el Interrupt on change de los pines
+    bsf IOCB, 1
+    bsf IOCB, 2
+
+    banksel PORTA
+    movf PORTB, 0 ; Termina condición de mismatch
+    bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera
     return
 
 config_reloj:
@@ -3293,17 +3470,5 @@ config_tmr1:
     bsf ((T1CON) and 07Fh), 4
     bsf ((T1CON) and 07Fh), 5 ; Prescaler de 1:8
     reiniciar_tmr1 ; Reiniciar conteo del tmr1
-    return
-
-config_tmr2:
-    banksel PORTA ; Acceder al Bank 0
-    bsf ((T2CON) and 07Fh), 2 ; Timer2 is on
-    bsf ((T2CON) and 07Fh), 6 ; Postscaler de 1:16
-    bsf ((T2CON) and 07Fh), 5
-    bsf ((T2CON) and 07Fh), 4
-    bsf ((T2CON) and 07Fh), 3
-    bsf ((T2CON) and 07Fh), 1 ; Prescaler de 1:16
-    bsf ((T2CON) and 07Fh), 3
-    reiniciar_tmr2 ; Reiniciar conteo del tmr2
     return
 end
