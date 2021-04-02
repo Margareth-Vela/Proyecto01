@@ -2507,7 +2507,16 @@ reiniciar_tmr2 macro ; Reinicio de Timer2
 ;-------------------------------------------------------------------------------
 ; Variables
 ;-------------------------------------------------------------------------------
+GLOBAL vias, via_sem, bandera_via_1, sem1_time_temp, sem1_time
 PSECT udata_bank0 ; Variables en banco 0
+    vias: DS 1 ;indicar de la via 1, 2 o 3
+
+    via_sem: DS 1 ;guarda el valor de sem1_time en la temporal
+    bandera_via_1: DS 1 ;Indica si estoy en verde, parpadeo o amarillo
+    sem1_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
+    sem2_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
+    sem3_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
+
     modo: DS 1 ;bandera de modo
     var_modo: DS 1 ;Para configurar el display de modo
     modo_d: DS 1 ;Para display de decenas de modo
@@ -2535,9 +2544,10 @@ PSECT udata_bank0 ; Variables en banco 0
     sem2_time: DS 1
     sem3_time: DS 1
 
-    flags: DS 1
+    flags: DS 1 ;Para determinar que display ses enciende
     contador: DS 1
     contador_temp: DS 1
+    cont_small: DS 4
     unidades: DS 1 ;Para sacar el valor en decimal
     decenas: DS 1
 
@@ -2579,7 +2589,7 @@ pop:
     movwf STATUS
     swapf W_TEMP, F
     swapf W_TEMP, W
-    retfie
+    RETFIE
 
 ;--------------------------------------------------------------------------------
 ; Sub rutinas para interrupciones
@@ -2592,9 +2602,161 @@ int_tmr2:
 
 int_tmr1:
     reiniciar_tmr1
+    btfsc vias, 0
+    call restar_via_1
+    btfsc vias, 1
+    call restar_via_2
+    btfsc vias, 2
+    call restar_via_3
+    return
+
+ restar_via_1:
     decf sem1_time
+    decf sem1_time_temp
+
+    movlw 6
+    subwf sem1_time_temp
+    btfsc bandera_via_1,0
+    call revisar_carry
+    btfsc STATUS,2
+    call cambio_a_parpadeo
+    btfss bandera_via_1,0
+    addwf sem1_time_temp
+
+    movlw 0x03
+    subwf sem1_time_temp
+    btfsc bandera_via_1,1
+    call revisar_carry
+    btfsc bandera_via_1,1
+    goto $+5
+    btfsc STATUS,2
+    call cambio_a_amarillo
+    btfss bandera_via_1,1
+    addwf sem1_time_temp
+
+    movf sem1_time_temp, W
+    btfsc STATUS,2
+    call cambio_de_via ;hacer cambios de valores
+    return
+
+  revisar_carry:
+    addwf sem1_time_temp
+    return
+
+  cambio_a_parpadeo:
+    bsf bandera_via_1, 0
+    addwf sem1_time_temp
+    return
+
+
+  cambio_a_amarillo:
+    bcf bandera_via_1, 0
+    bsf bandera_via_1, 1
+    addwf sem1_time_temp
+    return
+
+  cambio_de_via:
+    bcf bandera_via_1, 1
+    bsf bandera_via_1, 2
+    return
+
+restar_via_2:
     decf sem2_time
+    decf sem2_time_temp
+
+    movlw 6
+    subwf sem2_time_temp
+    btfsc bandera_via_1,0
+    call revisar_carry_2
+    btfsc STATUS,2
+    call cambio_a_parpadeo_2
+    btfss bandera_via_1,0
+    addwf sem2_time_temp
+
+    movlw 0x03
+    subwf sem2_time_temp
+    btfsc bandera_via_1,1
+    call revisar_carry_2
+    btfsc bandera_via_1,1
+    goto $+5
+    btfsc STATUS,2
+    call cambio_a_amarillo_2
+    btfss bandera_via_1,1
+    addwf sem2_time_temp
+
+    movf sem2_time_temp, W
+    btfsc STATUS,2
+    call cambio_de_via_2 ;hacer cambios de valores
+    return
+  revisar_carry_2:
+    addwf sem2_time_temp
+    return
+
+  cambio_a_parpadeo_2:
+    bsf bandera_via_1, 0
+    addwf sem2_time_temp
+    return
+
+
+  cambio_a_amarillo_2:
+    bcf bandera_via_1, 0
+    bsf bandera_via_1, 1
+    addwf sem2_time_temp
+    return
+
+  cambio_de_via_2:
+    bcf bandera_via_1, 1
+    bsf bandera_via_1, 2
+    return
+
+ restar_via_3:
     decf sem3_time
+    decf sem3_time_temp
+
+    movlw 6
+    subwf sem3_time_temp
+    btfsc bandera_via_1,0
+    call revisar_carry_3
+    btfsc STATUS,2
+    call cambio_a_parpadeo_3
+    btfss bandera_via_1,0
+    addwf sem3_time_temp
+
+    movlw 0x03
+    subwf sem3_time_temp
+    btfsc bandera_via_1,1
+    call revisar_carry_3
+    btfsc bandera_via_1,1
+    goto $+5
+    btfsc STATUS,2
+    call cambio_a_amarillo_3
+    btfss bandera_via_1,1
+    addwf sem3_time_temp
+
+    movf sem3_time_temp, W
+    btfsc STATUS,2
+    call cambio_de_via_3 ;hacer cambios de valores
+    return
+
+ revisar_carry_3:
+    addwf sem3_time_temp
+    return
+
+  cambio_a_parpadeo_3:
+    bsf bandera_via_1, 0
+    addwf sem3_time_temp
+    return
+
+
+  cambio_a_amarillo_3:
+    bcf bandera_via_1, 0
+    bsf bandera_via_1, 1
+    addwf sem3_time_temp
+    return
+
+  cambio_de_via_3:
+    bcf bandera_via_1, 1
+    bsf bandera_via_1, 2
     return
 
 int_tmr0:
@@ -2720,24 +2882,157 @@ main:
     call config_tmr2 ; Configurar el registro de TMR2
     call config_int ; Configuración de las interrupciones
     call tiempos ; Cargan los valores iniciales
+    call default_semaforos
 
 loop:
-    call display_semaforo1 ; Preparar el dato decimal del display del s1
-    call display_semaforo2 ; Preparar el dato decimal del display del s2
-    call display_semaforo3 ; Preparar el dato decimal del display del s3
-    ;btfsc bandera, 0; en tu loop vas a verificar que via tiene la bandera
-    ;call via1 ; y vas a asignar el valor de cont_viax = vartemp del display
+
+    btfsc vias, 0; en tu loop vas a verificar que via tiene la bandera
+    call via_1 ; y vas a asignar el valor de cont_viax = vartemp del display
+    btfsc vias, 1
+    call via_2
+    btfsc vias, 2
+    call via_3
     goto loop
 
 ;-------------------------------------------------------------------------------
-; Subrutinas para loop principal
+; Subrutinas para Semáforos
 ;-------------------------------------------------------------------------------
+via_1:
+    btfss via_sem, 0
+    call guardar_valor_sem1
 
+    call display_semaforo1
 
+    btfsc bandera_via_1, 0
+    call verde_parpadeante
+    btfsc bandera_via_1, 1
+    call subrutina_de_amarillo
+    btfsc bandera_via_1, 2
+    call cambio_a_via_2
+    return
 
+verde_parpadeante:
+    bcf PORTA, 2
+    call delay
+    bsf PORTA, 2
+    return
 
+delay: ;cuenta medio segundo
+    movlw 0X3CF9
+    movwf cont_small
+    decfsz cont_small, f
+    goto $-1
+    return
 
+subrutina_de_amarillo:
+    bcf PORTA, 2
+    bsf PORTA, 1
+    return
 
+cambio_a_via_2:
+ bcf PORTA, 1
+ bsf PORTA, 0; via1
+ bsf PORTA, 5
+ bcf PORTA, 3; via2
+ clrf vias
+ bsf vias, 1 ;cambiar a via 2
+ bcf via_sem, 0
+ clrf bandera_via_1
+    return
+
+guardar_valor_sem1:
+    movf sem1_time, w ;se guarda el valor de sem1_time a una temporal
+    movwf sem1_time_temp ;que sirve para las leds de los semaforos
+    bsf via_sem, 0
+    return
+
+via_2:
+    btfss via_sem, 1
+    call guardar_valor_sem2
+
+    call display_semaforo2
+
+    btfsc bandera_via_1, 0
+    call verde_parpadeante_sem2
+    btfsc bandera_via_1, 1
+    call subrutina_de_amarillo_sem2
+    btfsc bandera_via_1, 2
+    call cambio_a_via_3
+    return
+
+verde_parpadeante_sem2:
+    bcf PORTA, 5
+    call delay
+    bsf PORTA, 5
+    return
+
+subrutina_de_amarillo_sem2:
+    bcf PORTA, 5
+    bsf PORTA, 4
+    return
+
+cambio_a_via_3:
+ bcf PORTA, 4
+ bsf PORTA, 3; via2
+ bsf PORTE, 2
+ bcf PORTE, 0; via3
+ bsf vias, 2 ;cambiar a via 3
+ bcf vias, 1
+ bcf via_sem, 1
+ clrf bandera_via_1
+    return
+
+guardar_valor_sem2:
+    movf sem2_time, w ;se guarda el valor de sem1_time a una temporal
+    movwf sem2_time_temp ;que sirve para las leds de los semaforos
+    bsf via_sem, 1
+    return
+
+via_3:
+    btfss via_sem, 2
+    call guardar_valor_sem3
+
+    call display_semaforo3
+
+    btfsc bandera_via_1, 0
+    call verde_parpadeante_sem3
+    btfsc bandera_via_1, 1
+    call subrutina_de_amarillo_sem3
+    btfsc bandera_via_1, 2
+    call cambio_a_via_1
+    return
+
+verde_parpadeante_sem3:
+    bcf PORTE, 2
+    call delay
+    bsf PORTE, 2
+    return
+
+subrutina_de_amarillo_sem3:
+    bcf PORTE, 2
+    bsf PORTE, 1
+    return
+
+cambio_a_via_1:
+ bcf PORTA, 0
+ bsf PORTA, 2; via1
+ bsf PORTE, 0
+ bcf PORTE, 1; via3
+ bsf vias, 0 ;cambiar a via 3
+ bcf vias, 2
+ bcf via_sem, 2
+ clrf bandera_via_1
+    return
+
+guardar_valor_sem3:
+    movf sem3_time, w ;se guarda el valor de sem1_time a una temporal
+    movwf sem3_time_temp ;que sirve para las leds de los semaforos
+    bsf via_sem, 2
+    return
+
+;-------------------------------------------------------------------------------
+; Subrutinas para Displays de los semáforos
+;-------------------------------------------------------------------------------
 display_semaforo1:
     movf sem1_time, 0 ; Mueve el valor del contador al registro W
     movwf sem_t1 ; Mueve el valor a una variable temporal
@@ -2851,14 +3146,22 @@ config_io:
     clrf PORTC ; Comenzar displays apagados
     clrf PORTD ; Comenzar el multiplexado apagado
     clrf PORTE ; Comenzar luces de indicadores apagados
+
+    bsf vias, 0
+    return
+
+default_semaforos:
+    bsf PORTA, 2; via1
+    bsf PORTA, 3; via2
+    bsf PORTE, 0; via3
     return
 
 tiempos: ; Se cargan los valores iniciales de los semaforos
-    movlw 10
+    movlw 7
     movwf sem1_time
-    movlw 15
+    movlw 7
     movwf sem2_time
-    movlw 20
+    movlw 7
     movwf sem3_time
     return
 
