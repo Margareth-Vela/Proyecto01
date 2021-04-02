@@ -143,10 +143,71 @@ int_tmr2:
 
 int_tmr1:
     reiniciar_tmr1
-    decf    sem1_time
-    decf    sem2_time
-    decf    sem3_time
+    btfsc   vias, 0
+    call    restar_via_1
+    btfsc   vias, 1
+    call    restar_via_2
+    btfsc   vias, 2
+    call    restar_via_3
     return
+
+ restar_via_1:
+    decf sem1_time
+    decf sem1_time_temp
+    
+    movlw 0x06
+    subwf sem1_time_temp
+    btfsc STATUS,2
+    btfss STATUS,0
+    bsf	  via1_verde_parpadea ;titileo delay
+    
+    movlw 0x03
+    subwf sem1_time_temp
+    btfsc STATUS,2
+    btfss STATUS,0
+    bsf	  via1_amarillo
+    
+    movf sem1_time_temp, W
+    btfss STATUS,2
+    bsf  cambio_a_via2 ;hacer cambios de valores 
+    
+    return
+    
+/*int_tmr1:
+    reiniciar_tmr1
+    ;decf    contador
+    
+    btfsc bandera,0
+    call restar_via1; -> decf sem1_time
+    
+   ; va en tu logica de vias no aqui
+    movlw 0x06
+    subwf contador
+    btfsc STATUS,2
+    btfss STATUS,0
+    call subrutina_de_parpadeo ;titileo delay
+    
+    movlw 0x03
+    subwf contador
+    btfsc STATUS,2
+    btfss STATUS,0
+    call subrutina_de_amarillo
+    
+    movf contador, W
+    btfss STATUS,2
+    call subrutina_de_cambio_a_via2;hacer cambios de valores 
+    
+    
+    return
+    
+    
+    subrutina_de_cambio_a_via2:
+	bcf pinamarillo
+	bsf pinrojo; via1
+	bsf pinverde
+	bcf pinrojo; via2
+	bsf bandera,1
+	bcf bandera,0*/
     
 int_tmr0:
     reiniciar_tmr0		; Reiniciar el TMR0
@@ -276,18 +337,53 @@ loop:
     call    display_semaforo1	; Preparar el dato decimal del display del s1
     call    display_semaforo2	; Preparar el dato decimal del display del s2
     call    display_semaforo3	; Preparar el dato decimal del display del s3
-    ;btfsc   bandera, 0; en tu loop vas a verificar que via tiene la bandera
-    ;call via1  ; y vas a asignar el valor de cont_viax = vartemp del display
+    ;btfsc   vias, 0; en tu loop vas a verificar que via tiene la bandera
+    ;call    via_1  ; y vas a asignar el valor de cont_viax = vartemp del display
     goto    loop
     
 ;-------------------------------------------------------------------------------
 ; Subrutinas para loop principal
 ;-------------------------------------------------------------------------------
-/*via1:
-    movf cont_via1, w
-    movwf contador_temp
-    call modo_config
-    return*/
+/*via_1:
+    call display_semaforo1
+    
+    btfss via_sem, 0
+    call  guardar_valor
+    btfsc via1_verde_parpadea, 0
+    call  verde_parpadeante
+    btfsc via1_amarillo, 0
+    call  subrutina_de_amarillo
+    btfsc cambio_a_via2, 0
+    call  cambio_de_via
+    
+    subrutina_de_amarillo:
+    
+    return
+    
+    movf contador, W
+    btfss STATUS,2
+    call subrutina_de_cambio_a_via2;hacer cambios de valores 
+    
+    
+    return
+    
+    
+    subrutina_de_cambio_a_via2:
+	bcf pinamarillo
+	bsf pinrojo; via1
+	bsf pinverde
+	bcf pinrojo; via2
+	bsf bandera,1
+	bcf bandera,0
+     
+    return
+    
+  
+guardar_valor: 
+    movf  sem1_time, w
+    movwf sem1_time_temp
+    bsf	  via_sem
+    return */
     
 display_semaforo1:	    
     movf    sem1_time, 0	    ; Mueve el valor del contador al registro W
