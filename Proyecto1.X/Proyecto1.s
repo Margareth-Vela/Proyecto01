@@ -68,6 +68,14 @@ PSECT udata_bank0  ; Variables en banco 0
     sem2_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
     sem3_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
     
+    tiempo_inicial_sem1: DS 1
+    tiempo_inicial_sem2: DS 1
+    tiempo_inicial_sem3: DS 1
+    
+    sem1_time_rojo: DS 1
+    sem2_time_rojo: DS 1
+    sem3_time_rojo: DS 1
+        
     modo:	DS 1	;bandera de modo
     var_modo:	DS 1	;Para configurar el display de modo
     modo_d:	DS 1	;Para display de decenas de modo
@@ -98,7 +106,7 @@ PSECT udata_bank0  ; Variables en banco 0
     flags:	DS 1	;Para determinar que display ses enciende
     contador:	DS 1
     contador_temp: DS 1
-    cont_small: DS 4
+    cont_small: DS 2
     unidades:	DS 1	;Para sacar el valor en decimal
     decenas:	DS 1
 
@@ -164,6 +172,8 @@ int_tmr1:
  restar_via_1:
     decf sem1_time 
     decf sem1_time_temp
+    decf sem2_time_rojo
+    decf sem3_time_rojo
     
     movlw 6
     subwf sem1_time_temp
@@ -214,6 +224,8 @@ int_tmr1:
 restar_via_2:
     decf sem2_time 
     decf sem2_time_temp
+    decf sem1_time_rojo
+    decf sem3_time_rojo
     
     movlw 6
     subwf sem2_time_temp
@@ -263,6 +275,8 @@ restar_via_2:
  restar_via_3:
     decf sem3_time 
     decf sem3_time_temp
+    decf sem1_time_rojo
+    decf sem2_time_rojo
     
     movlw 6
     subwf sem3_time_temp
@@ -453,6 +467,8 @@ via_1:
     call  guardar_valor_sem1
      
     call display_semaforo1
+    call display_semaforo2
+    call display_semaforo3
      
     btfsc bandera_via_1, 0
     call  verde_parpadeante
@@ -466,10 +482,11 @@ verde_parpadeante:
     bcf    PORTA, 2 
     call   delay
     bsf	   PORTA, 2
+    call   delay
     return
 
-delay:      ;cuenta medio segundo
-    movlw 0X3CF9
+delay:      ;cuenta aprox 0.30 ms
+    movlw 0x927C
     movwf cont_small
     decfsz cont_small, f
     goto $-1
@@ -494,6 +511,11 @@ cambio_a_via_2:
 guardar_valor_sem1: 
     movf  sem1_time, w	    ;se guarda el valor de sem1_time a una temporal
     movwf sem1_time_temp    ;que sirve para las leds de los semaforos
+    movwf tiempo_inicial_sem1
+    movwf sem2_time_rojo
+    addwf sem3_time_rojo  ;aquí tengo el valor de sem1_time
+    movf  sem2_time, w    ;muevo el valor del tiempo del semaforo 2 a w
+    addwf sem3_time_rojo  ;le sumo ese valor al tiempo del semaforo 3
     bsf	  via_sem, 0
     return 
 
@@ -501,7 +523,9 @@ via_2:
     btfss via_sem, 1
     call  guardar_valor_sem2
      
+    call display_semaforo1
     call display_semaforo2
+    call display_semaforo3
      
     btfsc bandera_via_1, 0
     call  verde_parpadeante_sem2
@@ -515,6 +539,7 @@ verde_parpadeante_sem2:
     bcf    PORTA, 5
     call   delay
     bsf	   PORTA, 5
+    call   delay
     return
      
 subrutina_de_amarillo_sem2:
@@ -536,13 +561,20 @@ cambio_a_via_3:
 guardar_valor_sem2: 
     movf  sem2_time, w	    ;se guarda el valor de sem1_time a una temporal
     movwf sem2_time_temp    ;que sirve para las leds de los semaforos
+    movwf tiempo_inicial_sem2
+    movwf sem3_time_rojo
+    addwf sem1_time_rojo  ;aquí tengo el valor de sem1_time
+    movf  sem3_time, w    ;muevo el valor del tiempo del semaforo 2 a w
+    addwf sem1_time_rojo  ;le sumo ese valor al tiempo del semaforo 3
     bsf	  via_sem, 1
     return 
     
 via_3:
     btfss via_sem, 2
     call  guardar_valor_sem3
-     
+    
+    call display_semaforo1
+    call display_semaforo2
     call display_semaforo3
      
     btfsc bandera_via_1, 0
@@ -557,6 +589,7 @@ verde_parpadeante_sem3:
     bcf    PORTE, 2  
     call   delay
     bsf	    PORTE, 2
+    call   delay
     return
      
 subrutina_de_amarillo_sem3:
@@ -573,21 +606,36 @@ cambio_a_via_1:
 	bcf vias, 2
 	bcf via_sem, 2
 	clrf bandera_via_1
+	movf tiempo_inicial_sem1, W
+	movwf sem1_time
+	movf tiempo_inicial_sem2, W
+	movwf sem2_time
+	movf tiempo_inicial_sem3, W
+	movwf sem3_time
     return
     
 guardar_valor_sem3: 
     movf  sem3_time, w	    ;se guarda el valor de sem1_time a una temporal
     movwf sem3_time_temp    ;que sirve para las leds de los semaforos
+    movwf tiempo_inicial_sem3
+    movwf sem1_time_rojo
+    movwf sem2_time_rojo  ;aquí tengo el valor de sem1_time
+    movf  tiempo_inicial_sem1, w    ;muevo el valor del tiempo del semaforo 2 a w
+    addwf sem2_time_rojo  ;le sumo ese valor al tiempo del semaforo 3
     bsf	  via_sem, 2
     return 
     
 ;-------------------------------------------------------------------------------
 ; Subrutinas para Displays de los semáforos
 ;-------------------------------------------------------------------------------    
-display_semaforo1:	    
-    movf    sem1_time, 0	    ; Mueve el valor del contador al registro W
-    movwf   sem_t1	    ; Mueve el valor a una variable temporal
-    
+display_semaforo1:
+    btfsc   via_sem, 0  ;estoy en vía 1
+    call    tiempo_verde_via_1
+    btfsc   via_sem, 1 ;estoy en vía 2
+    call    tiempo_rojo_via_1
+    btfsc   via_sem, 2 ;estoy en vía 3
+    call    tiempo_rojo_via_1
+        
     clrf    unidades_s1	    ; Se limpian las variables a utilizar 
     clrf    decenas_s1
     
@@ -615,9 +663,14 @@ display_semaforo1:
     
     return 
     
-display_semaforo2:   
-    movf    sem2_time, 0	; Mueve el valor del contador al registro W
-    movwf   sem_t2	; Mueve el valor a una variable temporal
+display_semaforo2:  
+    btfsc   via_sem, 0  ;estoy en vía 1
+    call    tiempo_rojo_via_2
+    btfsc   via_sem, 1 ;estoy en vía 2
+    call    tiempo_verde_via_2
+    btfsc   via_sem, 2 ;estoy en vía 3
+    call    tiempo_rojo_via_2
+    
     
     clrf    unidades_s2	; Se limpian las variables a utilizar 
     clrf    decenas_s2
@@ -647,10 +700,13 @@ display_semaforo2:
     return 
     
 display_semaforo3:  
-    
-    movf    sem3_time, 0	; Mueve el valor del contador al registro W
-    movwf   sem_t3	; Mueve el valor a una variable temporal
-    
+    btfsc   via_sem, 0  ;estoy en vía 1
+    call    tiempo_rojo_via_3
+    btfsc   via_sem, 1 ;estoy en vía 2
+    call    tiempo_rojo_via_3
+    btfsc   via_sem, 2 ;estoy en vía 3
+    call    tiempo_verde_via_3
+       
     clrf    unidades_s3	; Se limpian las variables a utilizar 
     clrf    decenas_s3
     
@@ -677,7 +733,38 @@ display_semaforo3:
     movwf   sem3_u
     
     return 
-
+;-------------------------------------------------------------------------------
+; Subrutinas para tiempo de los displays
+;-------------------------------------------------------------------------------
+tiempo_rojo_via_1:
+    movf    sem1_time_rojo, 0	; Mueve el valor del contador al registro W
+    movwf   sem_t1	; Mueve el valor a una variable temporal
+    return
+    
+tiempo_verde_via_1:
+    movf    sem1_time, 0	    ; Mueve el valor del contador al registro W
+    movwf   sem_t1	    ; Mueve el valor a una variable temporal
+    return
+    
+tiempo_rojo_via_2:
+    movf    sem2_time_rojo, 0	; Mueve el valor del contador al registro W
+    movwf   sem_t2	; Mueve el valor a una variable temporal
+    return
+    
+tiempo_verde_via_2:
+    movf    sem2_time, 0	; Mueve el valor del contador al registro W
+    movwf   sem_t2	; Mueve el valor a una variable temporal
+    return
+ 
+tiempo_rojo_via_3:
+    movf    sem3_time_rojo, 0	; Mueve el valor del contador al registro W
+    movwf   sem_t3	; Mueve el valor a una variable temporal
+    return
+    
+tiempo_verde_via_3:
+    movf    sem3_time, 0	; Mueve el valor del contador al registro W
+    movwf   sem_t3	; Mueve el valor a una variable temporal
+    return
 ;-------------------------------------------------------------------------------
 ; Subrutinas de configuración
 ;-------------------------------------------------------------------------------
