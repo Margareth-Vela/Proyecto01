@@ -7,7 +7,7 @@
     ;Hardware:	    Displays 7 seg en PORTC, transistores en PORTD,
     ;		    leds en PORTA, PORTE y PORTB & push buttons en PORTB
     ;Creado:	    21 mar 2021
-    ;Última modificación: abr, 2021
+    ;Última modificación: 02 abr, 2021
     
 PROCESSOR 16F887
 #include <xc.inc>
@@ -32,15 +32,14 @@ PROCESSOR 16F887
 ; Macros
 ;-------------------------------------------------------------------------------       
 reiniciar_tmr0 macro	; Reinicio de Timer0
-    Banksel PORTA	; Acceder al Bank 0
+    banksel PORTA	
     movlw   254		; Cargar valor de registro W, valor inicial del tmr0
-    ; t_deseado=(4*t_oscilación)(256-TMR0)(Preescaler)
     movwf   TMR0	; Mover el valor de W a TMR0 por interrupción
     bcf	    T0IF	; Limpiar bandera de interrupción por overflow	
     endm
     
 reiniciar_tmr1 macro	; Reinicio de Timer1
-    Banksel PORTA	; Acceder al Bank 0
+    banksel PORTA	
     movlw   0x85	; Cargar valor de registro W, valor inicial del tmr1
     movwf   TMR1H	; Mover el valor de W a TMR1H
     movlw   0xEE	; Cargar valor de registro W, valor inicial del tmr1
@@ -51,59 +50,55 @@ reiniciar_tmr1 macro	; Reinicio de Timer1
 ;-------------------------------------------------------------------------------
 ; Variables 
 ;-------------------------------------------------------------------------------
-GLOBAL vias, via_sem, bandera_via_1, sem1_time_temp, sem1_time, modo, var, unidades, decenas, modo_d, modo_u
-PSECT udata_bank0  ; Variables en banco 0
-    vias:	DS 1   ;indicar de la via 1, 2 o 3
+PSECT udata_bank0	; Variables en banco 0
+    vias:	DS 1	;indicar la via 1, 2 o 3
     
-    via_sem:	DS 1   ;guarda el valor de sem1_time en la temporal
+    via_sem:	DS 1   ;guarda el valor de tiempo temporal
     bandera_via_1:	DS 1   ;Indica si estoy en verde, parpadeo o amarillo
     sem1_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
-    sem2_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
-    sem3_time_temp: DS 1 ;Variable para controlar las leds de semaforo 1
+    sem2_time_temp: DS 1 ;Variable para controlar las leds de semaforo 2
+    sem3_time_temp: DS 1 ;Variable para controlar las leds de semaforo 3
     
     tiempo_inicial_sem1: DS 1 ;Para guardar los valores iniciales de los semaforos
     tiempo_inicial_sem2: DS 1
     tiempo_inicial_sem3: DS 1
     
-    sem1_time_rojo: DS 1
+    sem1_time_rojo: DS 1  ;Para indicar los tiempos en rojo
     sem2_time_rojo: DS 1
     sem3_time_rojo: DS 1
         
     modo:	DS 1	;bandera de modo
     var:	DS 1	;Para configurar el display de modo
-    unidades:	DS 1	;Para sacar el valor en decimal
+    unidades:	DS 1	;Para sacar el valor en decimal del modo
     decenas:	DS 1
     modo_d:	DS 1	;Para display de decenas de modo
     modo_u:	DS 1	;Para display de unidades de modo
-    var_reset:  DS 1
+    var_reset:  DS 1	;Sirve para el reseteo de semáforos
     
     sem_t1:	DS 1  ;Para display de tiempo de semáforo 1
-    decenas_s1: DS 1
-    unidades_s1:DS 1
-    sem1_d:	DS 1
-    sem1_u:	DS 1
+    decenas_s1: DS 1  ;Para sacar el valor en decimal del tiempo de sem1
+    unidades_s1:DS 1  
+    sem1_d:	DS 1  ;Para display de decenas de semáforo 1
+    sem1_u:	DS 1  ;Para display de unidades de semáforo 1
     
     sem_t2:	DS 1  ;Para display de tiempo de semáforo 2
-    decenas_s2: DS 1
+    decenas_s2: DS 1  ;Para sacar el valor en decimal del tiempo de sem2
     unidades_s2:DS 1
-    sem2_d:	DS 1
-    sem2_u:	DS 1
+    sem2_d:	DS 1  ;Para display de decenas de semáforo 2
+    sem2_u:	DS 1  ;Para display de unidades de semáforo 2
     
     sem_t3:	DS 1  ;Para display de tiempo de semáforo 3
-    decenas_s3: DS 1
+    decenas_s3: DS 1  ;Para sacar el valor en decimal del tiempo de sem3
     unidades_s3:DS 1
-    sem3_d:	DS 1
-    sem3_u:	DS 1
+    sem3_d:	DS 1  ;Para display de decenas de semáforo 3
+    sem3_u:	DS 1  ;Para display de unidades de semáforo 3
     
     sem1_time:	DS 1	;tiempos de semáforos
     sem2_time:	DS 1
     sem3_time:	DS 1
     
     flags:	DS 1	;Para determinar que display se enciende
-    contador:	DS 1
-    contador_temp: DS 1
-    cont_small: DS 2
-    cont_reset: DS 2
+    cont_small: DS 2	;Para delay de parpadeo
 
     tiempo_sem_1: DS 1 ;para configurar tiempos 
     tiempo_sem_2: DS 1
@@ -520,7 +515,7 @@ display_unidades_s1:
     movf    sem1_u, W	; El primer byte de display va al registro W
     movwf   PORTC		; Colocar el valor en el PORTC
     bsf	    PORTD, 3		; Seleccionar unidades
-    movlw   0x2			; Preparar para siguiente display
+    movlw   0x2 			; Preparar para siguiente display
     movwf   flags
     return
     
@@ -845,7 +840,7 @@ guardar_valor_sem2:
     movwf sem2_time_temp    ;que sirve para las leds de los semaforos
     movwf tiempo_inicial_sem2
     movwf sem3_time_rojo
-    addwf sem1_time_rojo  ;aquí tengo el valor de sem1_time
+    movwf sem1_time_rojo  ;aquí tengo el valor de sem1_time
     movf  sem3_time, w    ;muevo el valor del tiempo del semaforo 2 a w
     addwf sem1_time_rojo  ;le sumo ese valor al tiempo del semaforo 3
     bsf	  via_sem, 1
