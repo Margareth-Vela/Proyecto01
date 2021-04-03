@@ -2524,6 +2524,7 @@ PSECT udata_bank0 ; Variables en banco 0
     decenas: DS 1
     modo_d: DS 1 ;Para display de decenas de modo
     modo_u: DS 1 ;Para display de unidades de modo
+    var_reset: DS 1
 
     sem_t1: DS 1 ;Para display de tiempo de semáforo 1
     decenas_s1: DS 1
@@ -2551,6 +2552,7 @@ PSECT udata_bank0 ; Variables en banco 0
     contador: DS 1
     contador_temp: DS 1
     cont_small: DS 2
+    cont_reset: DS 2
 
     tiempo_sem_1: DS 1 ;para configurar tiempos
     tiempo_sem_2: DS 1
@@ -2591,13 +2593,13 @@ isr:
     btfsc modo, 0 ;tenemos la bandera de modo 0, 1, 2, 3, 4
     goto modo_0_int
     btfsc modo, 1
-    call modo_1_int
+    goto modo_1_int
     btfsc modo, 2
-    call modo_2_int
+    goto modo_2_int
     btfsc modo, 3
-    call modo_3_int
-
-
+    goto modo_3_int
+    btfsc modo, 4
+    goto modo_4_int
 
 pop:
     swapf STATUS_TEMP, W
@@ -2623,13 +2625,35 @@ cambiar_modo_a_1:
 
 modo_1_int:
     btfss PORTB, 0 ; Si está presiona el push del bit 0,
-    incf tiempo_sem_1 ; incrementa la variable de tiempo
+    call incrementar_sem1 ; incrementa la variable de tiempo
     btfss PORTB, 1 ; Si está presiona el push del bit 1,
-    decf tiempo_sem_1 ; decrementa la variable de tiempo
+    call decrementar_sem1 ; decrementa la variable de tiempo
     btfss PORTB, 2 ; Si está presionado el push del bit 2,
     call cambiar_modo_a_2
     bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera de IOC
     goto pop
+
+incrementar_sem1:
+    movf tiempo_sem_1, W
+    sublw 20
+    btfss STATUS, 2 ;si ((STATUS) and 07Fh), 2 es 0 entonces incrementa
+    incf tiempo_sem_1, F
+    btfss STATUS, 2 ;si ((STATUS) and 07Fh), 2 es 1 entonces mueve el valor de 10 a la variable
+    goto $+3
+    movlw 10
+    movwf tiempo_sem_1
+    return
+
+decrementar_sem1:
+    movf tiempo_sem_1, W
+    sublw 10
+    btfss STATUS, 2
+    decf tiempo_sem_1, F
+    btfss STATUS, 2
+    goto $+3
+    movlw 20
+    movwf tiempo_sem_1
+    return
 
 cambiar_modo_a_2:
     clrf modo
@@ -2639,13 +2663,35 @@ cambiar_modo_a_2:
 
 modo_2_int:
     btfss PORTB, 0 ; Si está presiona el push del bit 0,
-    incf tiempo_sem_2 ; incrementa la variable de tiempo
+    call incrementar_sem2 ; incrementa la variable de tiempo
     btfss PORTB, 1 ; Si está presiona el push del bit 1,
-    decf tiempo_sem_2 ; decrementa la variable de tiempo
+    call decrementar_sem2 ; decrementa la variable de tiempo
     btfss PORTB, 2 ; Si está presionado el push del bit 2,
     call cambiar_modo_a_3
     bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera de IOC
     goto pop
+
+incrementar_sem2:
+    movf tiempo_sem_2, W
+    sublw 20
+    btfss STATUS, 2 ;si ((STATUS) and 07Fh), 2 es 0 entonces incrementa
+    incf tiempo_sem_2, F
+    btfss STATUS, 2 ;si ((STATUS) and 07Fh), 2 es 1 entonces mueve el valor de 10 a la variable
+    goto $+3
+    movlw 10
+    movwf tiempo_sem_2
+    return
+
+decrementar_sem2:
+    movf tiempo_sem_2, W
+    sublw 10
+    btfss STATUS, 2
+    decf tiempo_sem_2, F
+    btfss STATUS, 2
+    goto $+3
+    movlw 20
+    movwf tiempo_sem_2
+    return
 
 cambiar_modo_a_3:
     clrf modo
@@ -2655,13 +2701,35 @@ cambiar_modo_a_3:
 
 modo_3_int:
     btfss PORTB, 0 ; Si está presiona el push del bit 0,
-    incf tiempo_sem_3 ; incrementa la variable de tiempo
+    call incrementar_sem3 ; incrementa la variable de tiempo
     btfss PORTB, 1 ; Si está presiona el push del bit 1,
-    decf tiempo_sem_3 ; decrementa la variable de tiempo
+    call decrementar_sem3 ; decrementa la variable de tiempo
     btfss PORTB, 2 ; Si está presionado el push del bit 2,
     call cambiar_modo_a_4
     bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera de IOC
     goto pop
+
+incrementar_sem3:
+    movf tiempo_sem_3, W
+    sublw 20
+    btfss STATUS, 2 ;si ((STATUS) and 07Fh), 2 es 0 entonces incrementa
+    incf tiempo_sem_3, F
+    btfss STATUS, 2 ;si ((STATUS) and 07Fh), 2 es 1 entonces mueve el valor de 10 a la variable
+    goto $+3
+    movlw 10
+    movwf tiempo_sem_3
+    return
+
+decrementar_sem3:
+    movf tiempo_sem_3, W
+    sublw 10
+    btfss STATUS, 2
+    decf tiempo_sem_3, F
+    btfss STATUS, 2
+    goto $+3
+    movlw 20
+    movwf tiempo_sem_3
+    return
 
 cambiar_modo_a_4:
     clrf modo
@@ -2669,11 +2737,39 @@ cambiar_modo_a_4:
     bsf modo, 5
     return
 
+modo_4_int:
+    btfss PORTB, 0 ; Si está presiona el push del bit 0,
+    call aceptar ; incrementa la variable de tiempo
+    btfss PORTB, 1 ; Si está presiona el push del bit 1,
+    call denegar ; decrementa la variable de tiempo
+    bcf ((INTCON) and 07Fh), 0 ; Se limpia la bandera de IOC
+    goto pop
+
+aceptar:
+    movlw 1
+    movwf var_reset
+    bsf modo, 6
+    clrf vias
+    clrf via_sem
+    return
+
+denegar:
+    movlw 10
+    movwf tiempo_sem_1
+    movwf tiempo_sem_2
+    movwf tiempo_sem_3
+    clrf modo
+    bcf PORTB, 7
+    bsf modo, 0 ; cambia de modo
+    return
+
 ;-------------------------------------------------------------------------------
 ; Comienza funcionamiento de TMR1
 ;-------------------------------------------------------------------------------
 int_tmr1:
     reiniciar_tmr1
+    btfsc modo, 6
+    call delay_reseteo
     btfsc vias, 0
     call restar_via_1
     btfsc vias, 1
@@ -2685,7 +2781,13 @@ int_tmr1:
 ;-------------------------------------------------------------------------------
 ; Sub rutinas para TMR1
 ;-------------------------------------------------------------------------------
- restar_via_1:
+delay_reseteo:
+    decfsz var_reset, F
+    return
+    bsf modo, 7
+    return
+
+restar_via_1:
     decf sem1_time
     decf sem1_time_temp
     decf sem2_time_rojo
@@ -2935,7 +3037,7 @@ display_decenas_modo:
 ; Configuración del microcontrolador
 ;-------------------------------------------------------------------------------
 PSECT code, delta=2, abs
-ORG 100h ;Posición para el código
+ORG 170h ;Posición para el código
 
 tabla:
     clrf PCLATH ; PCLATH = 00
@@ -2983,8 +3085,8 @@ loop:
     call modo_2
     btfsc modo, 3
     call modo_3
-
-
+    btfsc modo, 6
+    goto reseteo
     btfsc vias, 0; en tu loop vas a verificar que via tiene la bandera
     call via_1 ; y vas a asignar el valor de cont_viax = vartemp del display
     btfsc vias, 1
@@ -3022,6 +3124,42 @@ modo_3:
     movwf var
     call modo_config
     return
+
+reseteo:
+    clrf PORTA
+    clrf PORTE
+    bsf PORTB, 5
+    bsf PORTB, 6
+    bsf PORTB, 7
+    bsf PORTA, 0
+    bsf PORTA, 3
+    bsf PORTE, 0
+    call reseteo_semaforos
+    btfss modo, 7
+    goto loop
+    movf tiempo_sem_1, W
+    movwf sem1_time
+    movf tiempo_sem_2, W
+    movwf sem2_time
+    movf tiempo_sem_3, W
+    movwf sem3_time
+    movlw 10
+    movwf tiempo_sem_1
+    movwf tiempo_sem_2
+    movwf tiempo_sem_3
+    clrf PORTA
+    clrf PORTE
+    bsf PORTA, 2
+    bsf PORTA, 3
+    bsf PORTE, 0
+    clrf modo
+    clrf bandera_via_1
+    bsf modo, 0
+    bsf vias, 0
+    bcf PORTB, 5
+    bcf PORTB, 6
+    bcf PORTB, 7
+    goto loop
 
 modo_config:
     clrf unidades ; Se limpian las variables a utilizar
@@ -3106,7 +3244,7 @@ guardar_valor_sem1:
     movwf sem1_time_temp ;que sirve para las leds de los semaforos
     movwf tiempo_inicial_sem1
     movwf sem2_time_rojo
-    addwf sem3_time_rojo ;aquí tengo el valor de sem1_time
+    movwf sem3_time_rojo ;aquí tengo el valor de sem1_time
     movf sem2_time, w ;muevo el valor del tiempo del semaforo 2 a w
     addwf sem3_time_rojo ;le sumo ese valor al tiempo del semaforo 3
     bsf via_sem, 0
@@ -3359,6 +3497,15 @@ tiempo_verde_via_3:
     movwf sem_t3 ; Mueve el valor a una variable temporal
     return
 
+reseteo_semaforos:
+    movlw 0
+    movwf sem_t1
+    movwf sem_t2
+    movwf sem_t3
+    call display_semaforo1
+    call display_semaforo2
+    call display_semaforo3
+    return
 ;-------------------------------------------------------------------------------
 ; Subrutinas de configuración
 ;-------------------------------------------------------------------------------
@@ -3411,11 +3558,9 @@ default_semaforos:
     return
 
 tiempos: ; Se cargan los valores iniciales de los semaforos
-    movlw 7
+    movlw 10
     movwf sem1_time
-    movlw 7
     movwf sem2_time
-    movlw 7
     movwf sem3_time
     return
 
