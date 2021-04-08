@@ -50,7 +50,7 @@ reiniciar_tmr1 macro	; Reinicio de Timer1
 ;-------------------------------------------------------------------------------
 ; Variables 
 ;-------------------------------------------------------------------------------
-Global cont_small
+Global cont_small, sem1_time, sem1_time_amarillo
 PSECT udata_bank0	; Variables en banco 0
     vias:	DS 1	;indicar la via 1, 2 o 3
     
@@ -67,6 +67,10 @@ PSECT udata_bank0	; Variables en banco 0
     sem1_time_rojo: DS 1  ;Para indicar los tiempos en rojo
     sem2_time_rojo: DS 1
     sem3_time_rojo: DS 1
+    
+    sem1_time_amarillo: DS 1
+    sem2_time_amarillo: DS 1
+    sem3_time_amarillo: DS 1
         
     modo:	DS 1	;bandera de modo
     var:	DS 1	;Para configurar el display de modo
@@ -337,6 +341,9 @@ delay_reseteo:
     return		  ;el reset
     
 restar_via_1:
+    btfsc bandera_via_1, 3 ;Revisa si está en amarillo
+    decf  sem1_time_amarillo
+    btfss bandera_via_1, 3 ;Revisa si está en verde
     decf sem1_time	;Decrementar las variables del  tiempo de los
     decf sem1_time_temp	;displays, así como la variable temporal del sem1
     decf sem2_time_rojo
@@ -375,6 +382,7 @@ restar_via_1:
     
   cambio_a_amarillo:
     bcf	  bandera_via_1, 0  ;Limpia la bandera de parpadeo y enciende la
+    bsf	  bandera_via_1, 3
     bsf	  bandera_via_1, 1  ;bandera de la rutina de amarillo
     addwf sem1_time_temp    ;le regresa 3 a la variable temporal
     return
@@ -386,6 +394,9 @@ restar_via_1:
 
 ;Se realiza el mismo procedimiento del semáforo 1 para el semáforo 2 y 3
 restar_via_2:
+    btfsc bandera_via_1, 3
+    decf  sem2_time_amarillo
+    btfss bandera_via_1, 3
     decf sem2_time 
     decf sem2_time_temp
     decf sem1_time_rojo
@@ -424,6 +435,7 @@ restar_via_2:
     
   cambio_a_amarillo_2:
     bcf	  bandera_via_1, 0
+    bsf	  bandera_via_1, 3
     bsf	  bandera_via_1, 1
     addwf sem2_time_temp
     return
@@ -434,6 +446,9 @@ restar_via_2:
     return
     
  restar_via_3:
+    btfsc bandera_via_1, 3
+    decf  sem3_time_amarillo
+    btfss bandera_via_1, 3
     decf sem3_time 
     decf sem3_time_temp
     decf sem1_time_rojo
@@ -472,6 +487,7 @@ restar_via_2:
     
   cambio_a_amarillo_3:
     bcf	  bandera_via_1, 0
+    bsf	  bandera_via_1, 3
     bsf	  bandera_via_1, 1
     addwf sem3_time_temp
     return
@@ -799,6 +815,10 @@ guardar_valor_sem1:
     movf  sem2_time, w    ;muevo el valor del tiempo del semaforo 2 a w
     addwf sem3_time_rojo  ;le sumo ese valor al tiempo del semaforo 3
     bsf	  via_sem, 0	  ;Prendo la bandera para que no vuelva a guardar los valores
+    movlw  3	    
+    subwf sem1_time ;Se resta 3 segundos al valor total en verde
+    movlw  3
+    movwf sem1_time_amarillo ;Se almacenan esos 3 segundos al valor de amarillo
     return 
 
 ;Se realiza el mismo procedimiento para las vías 2 y 3    
@@ -852,6 +872,10 @@ guardar_valor_sem2:
     movf  sem3_time, w    ;muevo el valor del tiempo del semaforo 3 a w
     addwf sem1_time_rojo  ;le sumo ese valor al tiempo del semaforo 1
     bsf	  via_sem, 1
+    movlw  3	    
+    subwf sem2_time ;Se resta 3 segundos al valor total del semáforo
+    movlw 3
+    movwf sem2_time_amarillo    ;Se almacenan esos 3 segundos en amarillo
     return 
     
 via_3:
@@ -874,7 +898,7 @@ verde_parpadeante_sem3:
     bcf    PORTE, 2  
     call   delay
     call   delay
-    bsf	    PORTE, 2
+    bsf	   PORTE, 2
     call   delay
     call   delay
     return
@@ -910,6 +934,10 @@ guardar_valor_sem3:
     movf  tiempo_inicial_sem1, w    ;muevo el valor del tiempo del semaforo 1 a w
     addwf sem2_time_rojo  ;le sumo ese valor al tiempo del semaforo 2
     bsf	  via_sem, 2
+    movlw  3	    
+    subwf sem3_time ;Se restan 3 segundos al valor total
+    movlw 3
+    movwf sem3_time_amarillo    ;Se almacenan esos 3 segundos en amarillo
     return 
     
 ;-------------------------------------------------------------------------------
@@ -1028,9 +1056,19 @@ tiempo_rojo_via_1:
     movwf   sem_t1	; Mueve ese valor a la variable utilizada para 
     return		; el valor en decimal de los displays 
     
-tiempo_verde_via_1:
-    movf    sem1_time, 0    ; Mueve el valor del tiempo en verde del sem1 al registro W
+tiempo_amarillo_via_1:
+    movf    sem1_time_amarillo, 0    ; Mueve el valor del tiempo en verde del sem1 al registro W
     movwf   sem_t1	    ; Mueve el valor a la variable utilizada para
+    return
+    
+tiempo_verde_via_1:
+    btfss bandera_via_1, 3
+    goto  $+4
+    movf  sem1_time_amarillo, 0    ; Mueve el valor del tiempo en amarillo del sem1 al registro W
+    movwf sem_t1	    ; Mueve el valor a la variable
+    return
+    movf  sem1_time, 0    ; Mueve el valor del tiempo en verde del sem1 al registro W
+    movwf sem_t1	    ; Mueve el valor a la variable utilizada para
     return		    ;el valor en decimal de los displays
     
 tiempo_rojo_via_2:
@@ -1039,20 +1077,30 @@ tiempo_rojo_via_2:
     return		;el valor en decimal de los displays
     
 tiempo_verde_via_2:
-    movf    sem2_time, 0 ; Mueve el valor del tiempo en verde del sem2 al registro W
-    movwf   sem_t2	; Mueve el valor a la variable utilizada para
-    return		;el valor en decimal de los displays
+    btfss bandera_via_1, 3
+    goto  $+4
+    movf  sem2_time_amarillo, 0    ; Mueve el valor del tiempo en amarillo del sem2 al registro W
+    movwf sem_t2	    ; Mueve el valor a la variable 
+    return
+    movf  sem2_time, 0    ; Mueve el valor del tiempo en verde del sem1 al registro W
+    movwf sem_t2	    ; Mueve el valor a la variable utilizada para
+    return		    ;el valor en decimal de los displays		
  
 tiempo_rojo_via_3:
     movf    sem3_time_rojo, 0	; Mueve el valor del tiempo en rojo del sem3 al registro W
     movwf   sem_t3	; Mueve el valor a la variable utilizada para
     return		;el valor en decimal de los displays
-    
+        
 tiempo_verde_via_3:
-    movf    sem3_time, 0 ; Mueve el valor del tiempo en verde del sem3 al registro W
-    movwf   sem_t3	; Mueve el valor a la variable utilizada para
-    return		;el valor en decimal de los displays
-
+    btfss bandera_via_1, 3
+    goto  $+4
+    movf  sem3_time_amarillo, 0    ; Mueve el valor del tiempo en amarillo del sem3 al registro W
+    movwf sem_t3	    ; Mueve el valor a la variable
+    return
+    movf  sem3_time, 0    ; Mueve el valor del tiempo en verde del sem1 al registro W
+    movwf sem_t3	    ; Mueve el valor a la variable utilizada para
+    return		    ;el valor en decimal de los displays		
+    
 reseteo_semaforos:
     movlw 0	    ;Los 3 displays muestran el valor de 0
     movwf sem_t1
