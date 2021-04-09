@@ -13,7 +13,7 @@
 %PSECTS
 $build/default/production/Proyecto1.o
 resVect CODE 0 0 0 3 2
-code CODE 0 0 0 35C 2
+code CODE 0 0 0 359 2
 intVect CODE 0 0 0 168 2
 udata_bank0 BANK0 1 20 20 2E 1
 udata_shr COMMON 1 70 70 2 1
@@ -32,14 +32,14 @@ BANK0 4E-6F 1
 BANK1 A0-EF 1
 BANK2 110-16F 1
 BANK3 190-1EF 1
-CONST 35C-1FFF 2
-ENTRY 35C-1FFF 2
+CONST 359-1FFF 2
+ENTRY 359-1FFF 2
 IDLOC 2000-2003 2
-CODE 35C-1FFF 2
+CODE 359-1FFF 2
 COMMON 72-7F 1
 EEDATA 2100-21FF 2
-STRCODE 35C-1FFF 2
-STRING 35C-1FFF 2
+STRCODE 359-1FFF 2
+STRING 359-1FFF 2
 # %LINETAB Section
 # This section enumerates the file/line to address mappings.
 # The beginning of the section is indicated by %LINETAB.
@@ -828,12 +828,12 @@ FF intVect CODE >459:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyect
 2CB code CODE >1060:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2CC code CODE >1061:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2CD code CODE >1062:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2CE code CODE >1064:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2CE code CODE >1065:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2CF code CODE >1066:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2D0 code CODE >1067:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2D1 code CODE >1068:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2D2 code CODE >1069:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2CE code CODE >1063:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2CF code CODE >1064:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2D0 code CODE >1065:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2D1 code CODE >1066:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2D2 code CODE >1067:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2D3 code CODE >1069:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2D3 code CODE >1070:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2D4 code CODE >1071:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2D5 code CODE >1072:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
@@ -841,12 +841,12 @@ FF intVect CODE >459:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyect
 2D6 code CODE >1075:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2D7 code CODE >1076:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2D8 code CODE >1077:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2D9 code CODE >1079:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2D9 code CODE >1080:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2DA code CODE >1081:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2DB code CODE >1082:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2DC code CODE >1083:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2DD code CODE >1084:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2D9 code CODE >1078:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2DA code CODE >1079:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2DB code CODE >1080:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2DC code CODE >1081:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2DD code CODE >1082:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2DE code CODE >1084:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2DE code CODE >1085:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2DF code CODE >1086:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2E0 code CODE >1087:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
@@ -854,116 +854,112 @@ FF intVect CODE >459:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyect
 2E1 code CODE >1090:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2E2 code CODE >1091:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2E3 code CODE >1092:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2E4 code CODE >1094:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2E4 code CODE >1095:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2E5 code CODE >1096:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2E6 code CODE >1097:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2E7 code CODE >1098:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2E8 code CODE >1099:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2E4 code CODE >1093:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2E5 code CODE >1094:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2E6 code CODE >1095:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2E7 code CODE >1096:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2E8 code CODE >1097:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2E9 code CODE >1099:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2E9 code CODE >1100:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2EA code CODE >1101:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2EB code CODE >1102:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2EC code CODE >1104:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2EC code CODE >1105:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2ED code CODE >1106:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2EE code CODE >1107:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2EF code CODE >1108:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F0 code CODE >1109:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F1 code CODE >1110:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F2 code CODE >1111:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F3 code CODE >1112:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F4 code CODE >1116:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F4 code CODE >1117:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F6 code CODE >1118:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F7 code CODE >1119:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2F8 code CODE >1121:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2FA code CODE >1122:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2EC code CODE >1103:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2ED code CODE >1104:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2EE code CODE >1105:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2EF code CODE >1106:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F0 code CODE >1107:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F1 code CODE >1111:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F1 code CODE >1112:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F3 code CODE >1113:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F4 code CODE >1114:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F5 code CODE >1116:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F7 code CODE >1117:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F8 code CODE >1118:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2F9 code CODE >1119:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2FA code CODE >1120:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2FB code CODE >1123:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2FC code CODE >1124:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 2FD code CODE >1125:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2FE code CODE >1128:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-2FF code CODE >1129:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-300 code CODE >1130:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-301 code CODE >1131:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-302 code CODE >1132:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-303 code CODE >1133:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-304 code CODE >1135:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-305 code CODE >1136:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-306 code CODE >1137:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-307 code CODE >1138:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-308 code CODE >1140:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-30A code CODE >1141:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-30B code CODE >1142:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-30C code CODE >1143:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-30D code CODE >1144:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-30E code CODE >1145:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-30F code CODE >1147:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2FE code CODE >1126:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+2FF code CODE >1127:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+300 code CODE >1128:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+301 code CODE >1130:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+302 code CODE >1131:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+303 code CODE >1132:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+304 code CODE >1133:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+305 code CODE >1135:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+307 code CODE >1136:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+308 code CODE >1137:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+309 code CODE >1138:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+30A code CODE >1139:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+30B code CODE >1140:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+30C code CODE >1142:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+30D code CODE >1143:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+30E code CODE >1144:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+30F code CODE >1145:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+310 code CODE >1147:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 310 code CODE >1148:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 311 code CODE >1149:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 312 code CODE >1150:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-313 code CODE >1152:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-313 code CODE >1153:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-314 code CODE >1154:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+313 code CODE >1151:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+314 code CODE >1152:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+315 code CODE >1154:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 315 code CODE >1155:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 316 code CODE >1156:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 317 code CODE >1157:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-318 code CODE >1159:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-318 code CODE >1160:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+318 code CODE >1158:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+319 code CODE >1160:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 319 code CODE >1161:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 31A code CODE >1162:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 31B code CODE >1163:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-31C code CODE >1165:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-31C code CODE >1166:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-31D code CODE >1167:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+31C code CODE >1164:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+31D code CODE >1165:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+31E code CODE >1167:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 31E code CODE >1168:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-31F code CODE >1169:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-320 code CODE >1170:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-321 code CODE >1172:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-321 code CODE >1173:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-323 code CODE >1174:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-324 code CODE >1175:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-325 code CODE >1176:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-326 code CODE >1177:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-327 code CODE >1178:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-328 code CODE >1179:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-329 code CODE >1181:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-32B code CODE >1182:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-32C code CODE >1183:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-32E code CODE >1184:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-32F code CODE >1185:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-330 code CODE >1187:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-330 code CODE >1188:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-332 code CODE >1189:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-333 code CODE >1190:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-334 code CODE >1191:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-335 code CODE >1193:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+320 code CODE >1169:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+321 code CODE >1170:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+322 code CODE >1171:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+323 code CODE >1172:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+324 code CODE >1173:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+325 code CODE >1174:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+326 code CODE >1176:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+328 code CODE >1177:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+329 code CODE >1178:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+32B code CODE >1179:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+32C code CODE >1180:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+32D code CODE >1182:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+32D code CODE >1183:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+32F code CODE >1184:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+330 code CODE >1185:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+331 code CODE >1186:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+332 code CODE >1188:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+334 code CODE >1189:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+335 code CODE >1190:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+336 code CODE >1191:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+337 code CODE >1193:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 337 code CODE >1194:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-338 code CODE >1195:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-339 code CODE >1196:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-33A code CODE >1198:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-33A code CODE >1199:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-33C code CODE >1200:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-33D code CODE >1201:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+339 code CODE >1195:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+33A code CODE >1196:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+33B code CODE >1197:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+33C code CODE >1198:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+33D code CODE >1199:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+33E code CODE >1201:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 33E code CODE >1202:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-33F code CODE >1203:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-340 code CODE >1204:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-341 code CODE >1206:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-341 code CODE >1207:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-343 code CODE >1208:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-344 code CODE >1209:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-345 code CODE >1210:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-346 code CODE >1211:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-347 code CODE >1212:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-348 code CODE >1213:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-34D code CODE >1214:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-34E code CODE >1216:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-34E code CODE >1217:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-350 code CODE >1218:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-351 code CODE >1219:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-352 code CODE >1220:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-353 code CODE >1221:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-354 code CODE >1222:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
-35B code CODE >1223:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+340 code CODE >1203:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+341 code CODE >1204:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+342 code CODE >1205:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+343 code CODE >1206:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+344 code CODE >1207:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+345 code CODE >1208:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+34A code CODE >1209:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+34B code CODE >1211:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+34B code CODE >1212:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+34D code CODE >1213:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+34E code CODE >1214:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+34F code CODE >1215:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+350 code CODE >1216:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+351 code CODE >1217:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
+358 code CODE >1218:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyecto1.X\Proyecto1.s
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -976,7 +972,7 @@ FF intVect CODE >459:C:\Users\vema3\OneDrive\Documents\GitHub\Proyecto01\Proyect
 # was defined in a psect then <psect> will be "-". File-name
 # is the name of the object file in which the symbol was defined.
 %SYMTAB
-__Hspace_0 35C 0 ABS 0 - -
+__Hspace_0 359 0 ABS 0 - -
 __Hspace_1 72 0 ABS 0 - -
 __Hspace_3 0 0 ABS 0 - -
 __Hspace_4 4010 0 ABS 0 - -

@@ -3092,7 +3092,7 @@ loop:
     btfsc modo, 6 ;Revisa si se ejecuta el reset
     goto reseteo
     btfsc vias, 0; Revisa en qué vía/semáforo estoy
-    call via_1 ;
+    call via_1
     btfsc vias, 1
     call via_2
     btfsc vias, 2
@@ -3504,11 +3504,6 @@ tiempo_rojo_via_1:
     movf sem1_time_rojo, 0 ; Mueve el valor del tiempo en rojo del sem1 al registro W
     movwf sem_t1 ; Mueve ese valor a la variable utilizada para
     return ; el valor en decimal de los displays
-
-tiempo_amarillo_via_1:
-    movf sem1_time_amarillo, 0 ; Mueve el valor del tiempo en verde del sem1 al registro W
-    movwf sem_t1 ; Mueve el valor a la variable utilizada para
-    return
 
 tiempo_verde_via_1:
     btfss bandera_via_1, 3
